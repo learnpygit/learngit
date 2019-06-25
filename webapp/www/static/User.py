@@ -21,7 +21,7 @@ async def test():
     #user = await User.find('123')
     await destroy_pool() #关闭连接池
     # print(user)
-    print(user)
+    print(user)kkkkjkjkjhhh
 #u = Model()    
 #print(u.__delete__)  
 
