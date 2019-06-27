@@ -1,5 +1,5 @@
 Git is a distributed version control system.
-Git is free software distributed under the GPL.
+Git is free software distributed under the GPL.11
 
 一、初始化一个Git仓库，使用git init命令。
 二、添加文件到Git仓库，分两步：
@@ -25,4 +25,5 @@ Git is free software distributed under the GPL.
    git reset --hard commit_id【或者：（上一个版本：git reset --hard HEAD^)】
    git log
    git reflog
+   
    
