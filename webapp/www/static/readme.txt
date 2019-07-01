@@ -57,6 +57,8 @@ Git tracks changes of files.
             的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令。
             (2)此后的推送
                 git push origin master
+九、从远程库克隆
+    git clone git@server-name:path/repo-name.git
             
 1、git init
 2、git add <file>
@@ -85,3 +87,5 @@ Git tracks changes of files.
        git push -u origin master
        此后的推送：
        git push origin master
+9、git clone git@server-name:path/repo-name.git
+   如:git clone git@github.com:learnpygit/gitskills.git
