@@ -2,7 +2,7 @@ Git is a distributed version control system.
 Git is free software distributed under the GPL.
 Git has a mutable index called stage.
 Git tracks changes of files.
-Creating a new branch is quick.
+Creating a new branch is quick AND simple.
 
 一、初始化一个Git仓库，使用git init命令。
 二、添加文件到Git仓库，分两步：
