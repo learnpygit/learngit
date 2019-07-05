@@ -79,6 +79,15 @@ Creating a new branch is quick and simple.
            指向dev的当前提交，所以合并速度非常快。当然，也不是每次合并都能Fast-forward，我们后面会讲其他方式的合并。
         9、创建、合并和删除分支非常快，所以Git鼓励你使用分支完成某个任务，合并后再删掉分支，这和直接在master分支上工作效果是
            一样的，但过程更安全。
+    <二>、解决冲突
+        1、当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+            解决冲突就是把Git合并失败的文件，手动编辑为我们希望的内容，再提交。
+        2、用git log --graph命令可以看到分支合并图。
+           用带参数的git log也可以看到分支的合并情况：git log --graph --pretty=oneline --abbrev-commit
+           
+           
+           
+           
         
 一、git init
 二、git add <file>
@@ -88,7 +97,8 @@ Creating a new branch is quick and simple.
 四、Git基本操作
     1、版本回退
         git reset --hard commit_id【或者：（上一个版本：git reset --hard HEAD^)】
-        git log  （注：查看提交历史）
+        git log  （注：查看提交历史） 
+            嫌输出信息太多，看得眼花缭乱的，可以试试加上--pretty=oneline参数：git log --pretty=oneline
         git reflog  （注：查看命令历史）
     2、管理修改
         git diff HEAD -- <file>
@@ -123,3 +133,6 @@ Creating a new branch is quick and simple.
             创建+切换分支：git checkout -b <name>
             合并某分支到当前分支：git merge <name>
             删除分支：git branch -d <name>
+    2、解决冲突
+        用git log --graph命令可以看到分支合并图。
+        用带参数的git log也可以看到分支的合并情况：git log --graph --pretty=oneline --abbrev-commit
