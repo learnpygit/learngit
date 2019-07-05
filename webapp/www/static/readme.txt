@@ -73,14 +73,13 @@ Creating a new branch is quick.
         4、Git怎么合并呢？最简单的方法，就是直接把master指向dev的当前提交，就完成了合并。
            所以Git合并分支也很快！就改改指针，工作区内容也不变！
         5、删除dev分支就是把dev指针给删掉，删掉后，我们就剩下了一条master分支。
+        6、git checkout命令加上-b参数表示创建并切换。
+        7、git branch命令会列出所有分支，当前分支前面会标一个*号。
+        8、git merge命令用于合并指定分支到当前分支。Fast-forward信息，Git告诉我们，这次合并是“快进模式”，也就是直接把master
+           指向dev的当前提交，所以合并速度非常快。当然，也不是每次合并都能Fast-forward，我们后面会讲其他方式的合并。
+        9、创建、合并和删除分支非常快，所以Git鼓励你使用分支完成某个任务，合并后再删掉分支，这和直接在master分支上工作效果是
+           一样的，但过程更安全。
         
-        Git鼓励大量使用分支：
-        查看分支：git branch
-        创建分支：git branch <name>
-        切换分支：git checkout <name>
-        创建+切换分支：git checkout -b <name>
-        合并某分支到当前分支：git merge <name>
-        删除分支：git branch -d <name>
 一、git init
 二、git add <file>
     git commit -m <message>
@@ -115,3 +114,12 @@ Creating a new branch is quick.
     2、从远程库克隆
         git clone git@server-name:path/repo-name.git
             如:git clone git@github.com:learnpygit/gitskills.git
+六、分支管理
+    1、创建与合并分支
+        Git鼓励大量使用分支：
+            查看分支：git branch
+            创建分支：git branch <name>
+            切换分支：git checkout <name>
+            创建+切换分支：git checkout -b <name>
+            合并某分支到当前分支：git merge <name>
+            删除分支：git branch -d <name>
