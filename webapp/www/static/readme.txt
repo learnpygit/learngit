@@ -102,6 +102,35 @@ Creating a new branch is quick and simple.
             Git分支十分强大，在团队开发中应该充分应用。
             合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，
             而fast forward合并就看不出来曾经做过合并。 
+    <四>、Bug分支
+            当你接到一个修复一个代号101的bug的任务时，很自然地，你想创建一个分支issue-101来修复它，但是，等等，当前正在dev上进行
+        的工作还没有提交。并不是你不想提交，而是工作只进行到一半，还没法提交，预计完成还需1天时间。但是，必须在两个小时内修
+        复该bug，怎么办？
+            Git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作：
+                git stash
+        1、确定要在哪个分支上修复bug，假定需要在master分支上修复，就从master创建临时分支：
+                git checkout master
+                git checkout -b issue-101
+        2、现在修复bug，然后提交：
+                例：   git add readme.txt
+                       git commit -m "fix bug 101"
+        3、修复完成后，切换到master分支，并完成合并，最后删除issue-101分支：
+                例：   git checkout master
+                       git merge --no-ff -m "merged bug fix 101" issue-101
+                       git branch -d issue-101
+        4、现在，是时候接着回到dev分支干活了！
+            用git stash list命令看看刚才的工作现场存到哪去了。
+            
+        5、需要恢复一下，有两个办法：
+            一是：用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除。
+            另一种方式是：用git stash pop，恢复的同时把stash内容也删了。
+            
+        6、你可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：
+            git stash apply stash@{0}
+            
+        7、小结
+            修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除。
+            当手头工作没有完成时，先把工作现场git stash一下，然后去修复bug，修复后，再git stash pop，回到工作现场。
         
 一、git init
 二、git add <file>
@@ -152,3 +181,10 @@ Creating a new branch is quick and simple.
         用带参数的git log也可以看到分支的合并情况：git log --graph --pretty=oneline --abbrev-commit
     3、分支管理策略
         git merge --no-ff -m <message> <branchname>
+    4、Bug分支
+       把当前工作现场“储藏”起来：git stash
+       恢复“储藏”起来的工作现场：(注：要回到“储藏”的分支中才能恢复)
+            (1)恢复:  git stash apply
+               删除:  git stash drop
+            (2)恢复+删除:  git stash pop
+       
