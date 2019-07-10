@@ -133,8 +133,36 @@ Creating a new branch is quick and simple.
             当手头工作没有完成时，先把工作现场git stash一下，然后去修复bug，修复后，再git stash pop，回到工作现场。
     <五>、Feature分支
         每添加一个新功能，最好新建一个feature分支，在上面开发，完成后，合并，最后，删除该feature分支。
-        如果要丢弃一个没有被合并过的分支，可以通过git branch -D <name>强行删除。
-    
+        如果要丢弃一个没有被合并过的分支，可以通过git branch -D <branch-name>强行删除。
+    <六>、多人协作
+        1、查看远程库的信息
+            git remote 或者，用git remote -v显示更详细的信息。
+        2、推送分支
+            git push origin <branch-name>
+                但是，并不是一定要把本地分支往远程推送，那么，哪些分支需要推送，哪些不需要呢？
+                (1)、master分支是主分支，因此要时刻与远程同步；
+                (2)、dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+                (3)、bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+                (4)、feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+                总之，就是在Git中，分支完全可以在本地自己藏着玩，是否推送，视你的心情而定！
+        3、抓取分支
+            (1)、多人协作时，当你的小伙伴从远程库clone时，默认情况下，你的小伙伴只能看到本地的master分支。
+                 现在，你的小伙伴要在dev分支上开发，就必须创建远程origin的dev分支到本地，于是他用这个命令创建本地dev分支：
+                    git checkout -b dev origin/dev
+            (2)、你的小伙伴的最新提交和你试图推送的提交有冲突，推送失败。用git pull把最新的提交从origin/<branch-name>抓下来，然后，
+                 在本地合并，解决冲突，再推送。
+                 如果git pull也失败了，原因是没有指定本地branch-name分支与远程origin/branch-name分支的链接，
+                 根据提示，设置branch-name和origin/branch-name的链接：
+                 例： git branch --set-upstream-to=origin/dev dev
+                 git pull成功，但是合并有冲突，需要手动解决，解决的方法和分支管理中的解决冲突完全一样。解决后，提交，再push。
+        4、小结
+            多人协作的工作模式通常是这样：
+                首先，可以试图用git push origin <branch-name>推送自己的修改；
+                如果推送失败，则因为远程分支比你的本地更新，需要先用git pull试图合并；
+                如果合并有冲突，则解决冲突，并在本地提交；
+                没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
+                如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，
+                用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。
 一、git init
 二、git add <file>
     git commit -m <message>
@@ -192,4 +220,10 @@ Creating a new branch is quick and simple.
             (2)恢复+删除:  git stash pop
     5、Feature分支
         强行删除没有被合并过的分支：git branch -D <name>
-       
+    6、多人协作 
+        (1)、查看远程库信息：git remote 或 git remote -v
+        (2)、从本地推送分支：git push origin branch-name
+             如果推送失败，先用抓取远程的新提交：git pull
+        (3)、在本地创建和远程分支对应的分支，本地和远程分支的名称最好一致：git checkout -b branch-name origin/branch-name   
+        (4)、建立本地分支和远程分支的关联：git branch --set-upstream-to <branch-name> origin/<branch-name>   （错误： git branch --set-upstream branch-name origin/branch-name）
+        (5)、从远程抓取分支：git pull
