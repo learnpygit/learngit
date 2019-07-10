@@ -163,6 +163,30 @@ Creating a new branch is quick and simple.
                 没有冲突或者解决掉冲突后，再用git push origin <branch-name>推送就能成功！
                 如果git pull提示no tracking information，则说明本地分支和远程分支的链接关系没有创建，
                 用命令git branch --set-upstream-to <branch-name> origin/<branch-name>。
+    <七>、Rebase
+        1、 Git有一种称为rebase的操作，有人把它翻译成“变基”。看看怎么把分叉的提交变成直线。
+            输入命令git rebase，原本分叉的提交现在变成一条直线了。
+            rebase操作的特点：把分叉的提交历史“整理”成一条直线，看上去更直观。缺点是本地的分叉提交已经被修改过了。
+        2、小结：
+            rebase操作可以把本地未push的分叉提交历史整理成直线；
+            rebase的目的是使得我们在查看历史提交的变化时更容易，因为分叉的提交需要三方对比。
+七、标签管理
+    发布一个版本时，我们通常先在版本库中打一个标签（tag），这样，就唯一确定了打标签时刻的版本。
+    Git的标签虽然是版本库的快照，但其实它就是指向某个commit的指针（跟分支很像对不对？但是分支可以移动，标签不能移动），
+    所以，创建和删除标签都是瞬间完成的。
+    <一>、创建标签
+        1、切换到需要打标签的分支上，默认标签是打在最新提交的commit上的。
+        2、有时候，如果忘了打标签，比如，现在已经是周五了，但应该在周一打的标签没有打，怎么办？
+           方法是找到历史提交的commit id，然后打上就可以了。
+        3、还可以创建带有说明的标签，用-a指定标签名，-m指定说明文字：
+           例： git tag -a v0.1 -m "version 0.1 released" 1094adb
+        4、注意，标签不是按时间顺序列出，而是按字母排序的。可以用git show <tagname>查看标签信息。
+        5、注意：标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，
+                 那么在这两个分支上都可以看到这个标签。
+
+
+
+
 一、git init
 二、git add <file>
     git commit -m <message>
@@ -227,3 +251,13 @@ Creating a new branch is quick and simple.
         (3)、在本地创建和远程分支对应的分支，本地和远程分支的名称最好一致：git checkout -b branch-name origin/branch-name   
         (4)、建立本地分支和远程分支的关联：git branch --set-upstream-to <branch-name> origin/<branch-name>   （错误： git branch --set-upstream branch-name origin/branch-name）
         (5)、从远程抓取分支：git pull
+    7、Rebase 
+        git rebase
+七、标签管理   
+    1、创建标签
+        (1)、新建一个标签，默认为HEAD；  git tag <tagname> 
+             也可以指定一个commit_id：   git tag <tagname> <commit_id>
+             
+        (2)、指定标签信息；  git tag -a <tagname> -m <message>
+        (3)、查看所有标签:  git tag
+        (4)、查看标签信息：git show <tagname>
