@@ -131,7 +131,10 @@ Creating a new branch is quick and simple.
         7、小结
             修复bug时，我们会通过创建新的bug分支进行修复，然后合并，最后删除。
             当手头工作没有完成时，先把工作现场git stash一下，然后去修复bug，修复后，再git stash pop，回到工作现场。
-        
+    <五>、Feature分支
+        每添加一个新功能，最好新建一个feature分支，在上面开发，完成后，合并，最后，删除该feature分支。
+        如果要丢弃一个没有被合并过的分支，可以通过git branch -D <name>强行删除。
+    
 一、git init
 二、git add <file>
     git commit -m <message>
@@ -187,4 +190,6 @@ Creating a new branch is quick and simple.
             (1)恢复:  git stash apply
                删除:  git stash drop
             (2)恢复+删除:  git stash pop
+    5、Feature分支
+        强行删除没有被合并过的分支：git branch -D <name>
        
