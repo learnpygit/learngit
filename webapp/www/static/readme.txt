@@ -183,7 +183,11 @@ Creating a new branch is quick and simple.
         4、注意，标签不是按时间顺序列出，而是按字母排序的。可以用git show <tagname>查看标签信息。
         5、注意：标签总是和某个commit挂钩。如果这个commit既出现在master分支，又出现在dev分支，
                  那么在这两个分支上都可以看到这个标签。
-
+    <二>、操作标签
+        1、命令git push origin <tagname>可以推送一个本地标签；
+        2、命令git push origin --tags可以推送全部未推送过的本地标签；
+        3、命令git tag -d <tagname>可以删除一个本地标签；
+        4、命令git push origin :refs/tags/<tagname>可以删除一个远程标签。
 
 
 
@@ -261,3 +265,8 @@ Creating a new branch is quick and simple.
         (2)、指定标签信息；  git tag -a <tagname> -m <message>
         (3)、查看所有标签:  git tag
         (4)、查看标签信息：git show <tagname>
+    2、操作标签
+        (1)、推送一个本地标签到远程； git push origin <tagname>
+        (2)、推送全部未推送过的本地标签到远程； git push origin --tags
+        (3)、删除一个本地标签； git tag -d <tagname>
+        (4)、删除一个远程标签： git push origin :refs/tags/<tagname>
