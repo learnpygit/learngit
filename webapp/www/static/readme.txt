@@ -188,9 +188,40 @@ Creating a new branch is quick and simple.
         2、命令git push origin --tags可以推送全部未推送过的本地标签；
         3、命令git tag -d <tagname>可以删除一个本地标签；
         4、命令git push origin :refs/tags/<tagname>可以删除一个远程标签。
-
-
-
+八、自定义Git
+    <一>、忽略特殊文件
+        1、有些时候，你必须把某些文件放到Git工作目录中，但又不能提交它们，比如保存了数据库密码的配置文件。
+           每次git status都会显示Untracked files。
+        2、这个问题解决起来也很简单，在Git工作区的根目录下创建一个特殊的.gitignore文件，然后把要忽略的文件名填进去，
+           Git就会自动忽略这些文件。
+        3、忽略文件的原则是：
+               (1) 忽略操作系统自动生成的文件，比如缩略图等；
+               (2) 忽略编译生成的中间文件、可执行文件等，也就是如果一个文件是通过另一个文件自动生成的，那自动生成的文件就没
+                   必要放进版本库，比如Java编译产生的.class文件；
+               (3) 忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件。
+        4、最后一步就是把.gitignore也提交到Git，就完成了！当然检验.gitignore的标准是git status命令是不是说working directory clean。
+        5、有些时候，你想添加一个文件到Git，但发现添加不了，原因是这个文件被.gitignore忽略了。
+           如果你确实想添加该文件，可以用-f强制添加到Git：
+                例： git add -f App.class
+        6、可能是.gitignore写得有问题，需要找出来到底哪个规则写错了，可以用git check-ignore命令检查：
+                例： git check-ignore -v App.class
+        7、小结
+                忽略某些文件时，需要编写.gitignore；
+                .gitignore文件本身要放到版本库里，并且可以对.gitignore做版本管理！
+    <二>、配置别名
+        1、我们只需要敲一行命令，告诉Git，以后st就表示status：
+                例： git config --global alias.st status
+            --global参数是全局参数，也就是这些命令在这台电脑的所有Git仓库下都有用。
+            配置Git的时候，加上--global是针对当前用户起作用的，如果不加，那只针对当前的仓库起作用。
+        2、配置文件放哪了？每个仓库的Git配置文件都放在.git/config文件中。（即加全局参数--global情况下）
+        3、而当前用户的Git配置文件放在用户主目录下的一个隐藏文件.gitconfig中。（即不加全局参数--global情况下）
+    <三>、搭建Git服务器
+        小结
+            1、搭建Git服务器非常简单，通常10分钟即可完成；
+            2、要方便管理公钥，用Gitosis；
+            3、要像SVN那样变态地控制权限，用Gitolite。
+    
+    
 一、git init
 二、git add <file>
     git commit -m <message>
@@ -270,3 +301,11 @@ Creating a new branch is quick and simple.
         (2)、推送全部未推送过的本地标签到远程； git push origin --tags
         (3)、删除一个本地标签； git tag -d <tagname>
         (4)、删除一个远程标签： git push origin :refs/tags/<tagname>
+八、自定义Git
+    1、忽略特殊文件
+        (1)、添加被.gitignore忽略的文件，可以用-f强制添加到Git：  git add -f <filename>
+        (2)、用git check-ignore命令检查.gitignore哪个规则写错：  git check-ignore -v <filename> 
+             （注：filename是想添加的文件名）
+    2、配置别名
+        例：git config --global alias.st status
+        
