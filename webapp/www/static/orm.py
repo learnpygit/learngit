@@ -57,6 +57,7 @@ async def select(sql, args, size=None):
 async def execute(sql, args, autocommit=True):
     log(sql)
     async with __pool.get() as conn:
+    #with (yield from __pool) as conn:
         if not autocommit:
             await conn.begin()
         try:
