@@ -5,7 +5,7 @@ __author__ = 'lee'
 
 import logging; logging.basicConfig(level=logging.INFO)
 
-import asyncio, os, json, time, functools, inspect
+import asyncio, os, json, time, functools, inspect #inspect模块有四大功能。这里的是第三个功能：获取类和方法的参数信息
 
 from urllib import parse
 
@@ -42,8 +42,14 @@ def post(path):
 
 def get_required_kw_args(fn):
     args = []
-    params = inspect.signature(fn).parameters
+    params = inspect.signature(fn).parameters 
+    #inspect.signature(fn)返回一个inspect.Signature类型对象，值为fn这个函数的所有参数。
+    #inspect.Signature对象的parameters属性：一个mappingproxy（映射）类型的对象，值为一个有序字典（Orderdict）。字典的key为参数名，
+    #  value是一个inspect.Parameter类型的对象
+   
     for name, param in params.items():
+    #inspect.Parameter对象的kind属性：一个_ParameterKind枚举类型的对象，值为这个参数的类型（可变参数，关键词参数，etc）
+    #inspect.Parameter对象的default属性：如果这个参数有默认值，即返回这个默认值，如果没有，返回一个inspect._empty类
         if param.kind == inspect.Parameter.KEYWORD_ONLY and param.default == inspect.Parameter.empty:
             args.append(name)
     return tuple(args)
@@ -156,22 +162,32 @@ def add_route(app, fn):
         raise ValueError('@get or @post not defined in %s.' % str(fn))
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
-    logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys())))
+    logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys()))) #inspect.signature(fn).parameters.keys()fn函数的参数名
     app.router.add_route(method, path, RequestHandler(app, fn))    
     
 def add_routes(app, module_name):
-    n = module_name.rfind('.')
+    n = module_name.rfind('.') #rfind（）最后出现的位置
+    logging.info('n: %s' % n)
     if n == (-1):
-        mod = __import__(module_name, globals(), locals())
+        #__import__()函数用于动态加载模块（类和函数），返回元组列表
+        mod = __import__(module_name, globals(), locals()) #导入模块handlers
+        logging.info('mod: %s' % mod)
+        print(mod)
+        logging.info('dir mod: %s' % dir(mod))
     else:
         name = module_name[n+1:]
         mod = getattr(__import__(module_name[:n], globals(), locals(), [name]), name)
-    for attr in dir(mod):
-        if attr.startswith('_'):
+    for attr in dir(mod): #这里的dir(mod)返回模块handlers的属性、方法列表。
+        #dir(object)返回模块的属性、方法列表。dir()函数不带参数时，返回当前范围内的变量、方法和定义的类型列表;带参数时，返回参数的属性、方法列表。
+        if attr.startswith('_'): #startswith(str, beg,end)用于检查字符串是否以指定子字符串开关，如果是则返回True，否则返回False
             continue
-        fn = getattr(mod, attr)
-        if callable(fn):
+        logging.info('attr: %s' % attr)
+        fn = getattr(mod, attr) #getattr(object, name, default)返回一个对象属性值。object:对象。 name：字符串，对象属性。
+        logging.info('add_routes fn: %s' % fn)
+        logging.info('callable: %s' % callable(fn))
+        if callable(fn): #callable(object)用于检查一个对象是否可调用。可调用返回True，否则返回False.对于函数、方法、lambda函式、类以及实现了__call__方法的类实例，它都返回True
             method = getattr(fn, '__method__', None)
             path = getattr(fn, '__route__', None)
             if method and path:
                 add_route(app, fn)
+                logging.info('diaoyong')
