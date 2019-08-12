@@ -41,7 +41,7 @@ def init_jinja2(app, **kw):
 async def logger_factory(app, handler):
     async def logger(request):
         # 记录日志:
-        logging.info('Request: %s %s' % (request.method, request.path))
+        logging.info('我Request: %s %s' % (request.method, request.path))
         # await asyncio.sleep(0.3)
         # 继续处理请求:
         return (await handler(request))
@@ -125,7 +125,7 @@ async def init(loop):
         logger_factory, response_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
-    add_routes(app, 'handlers')
+    add_routes(app, 'handlers') # 自动把handler模块的所有符合条件的函数注册了
     # add_routes(app, 'index')
     # add_static(app)
     # add_route(app, index)

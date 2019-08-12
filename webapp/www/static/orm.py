@@ -52,7 +52,9 @@ async def select(sql, args, size=None):
             else:
                 rs = await cur.fetchall()
         logging.info('rows returned: %s' % len(rs))
+        logging.info('returned: %s' % rs)
         return rs
+        #rs返回的是含有字典的列表
 
 async def execute(sql, args, autocommit=True):
     log(sql)
@@ -139,12 +141,13 @@ class ModelMetaclass(type):
         if not primaryKey:
             raise Exception('Primary key not found.')
         for k in mappings.keys():
-            attrs.pop(k)
+            attrs.pop(k) #同时从类属性中删除该Field属性，否则，容易造成运行时错误（实例的属性会遮盖类的同名属性）
         escaped_fields = list(map(lambda f: '`%s`' % f, fields))
         attrs['__mappings__'] = mappings # 保存属性和列的映射关系
         attrs['__table__'] = tableName
         attrs['__primary_key__'] = primaryKey # 主键属性名
         attrs['__fields__'] = fields # 除主键外的属性名
+        # 构造默认的SELECT, INSERT, UPDATE和DELETE语句:
         attrs['__select__'] = 'select `%s`, %s from `%s`' % (primaryKey, ', '.join(escaped_fields), tableName)
         attrs['__insert__'] = 'insert into `%s` (%s, `%s`) values (%s)' % (tableName, ', '.join(escaped_fields), primaryKey, create_args_string(len(escaped_fields) + 1))
         attrs['__update__'] = 'update `%s` set %s where `%s`=?' % (tableName, ', '.join(map(lambda f: '`%s`=?' % (mappings.get(f).name or f), fields)), primaryKey)
@@ -154,7 +157,7 @@ class ModelMetaclass(type):
 class Model(dict, metaclass=ModelMetaclass):
 
     def __init__(self, **kw):
-        super(Model, self).__init__(**kw)
+        super(Model, self).__init__(**kw)  # 跟uper().__init__()一样
 
     def __getattr__(self, key):
         try:
@@ -208,6 +211,7 @@ class Model(dict, metaclass=ModelMetaclass):
     @classmethod
     async def findNumber(cls, selectField, where=None, args=None):
         ' find number by select and where. '
+        #print('找到')
         sql = ['select %s _num_ from `%s`' % (selectField, cls.__table__)]
         if where:
             sql.append('where')
@@ -225,9 +229,12 @@ class Model(dict, metaclass=ModelMetaclass):
         rs = await select('%s where `%s`=?' % (cls.__select__, cls.__primary_key__), [pk], 1)
         if len(rs) == 0:
             return None
-        return cls(**rs[0])
+        # print(rs[0])
+        # print(cls(**rs[0]))
+        return cls(**rs[0]) #cls代表类本身，cls(**rs[0])，等价于Model(**rs[0])
         #return rs[0]
         #print(rs[0])
+        #return [cls(**r) for r in rs]
 
     async def save(self):
         print('sucess')

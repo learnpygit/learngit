@@ -99,6 +99,7 @@ class RequestHandler(object):
         
 
     async def __call__(self, request):
+        print('我是。。。')
         kw = None #获取参数
         if self._has_var_kw_arg or self._has_named_kw_args or self._required_kw_args:
             if request.method == 'POST':
@@ -154,7 +155,8 @@ def add_static(app):
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
-            
+
+#  用来注册一个URL处理函数          
 def add_route(app, fn):
     method = getattr(fn, '__method__', None)
     path = getattr(fn, '__route__', None)
@@ -190,4 +192,4 @@ def add_routes(app, module_name):
             path = getattr(fn, '__route__', None)
             if method and path:
                 add_route(app, fn)
-                logging.info('diaoyong')
+                #logging.info('diaoyong')
