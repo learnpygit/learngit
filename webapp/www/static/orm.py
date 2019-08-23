@@ -157,7 +157,7 @@ class ModelMetaclass(type):
 class Model(dict, metaclass=ModelMetaclass):
 
     def __init__(self, **kw):
-        super(Model, self).__init__(**kw)  # 跟uper().__init__()一样
+        super(Model, self).__init__(**kw)  # 跟super().__init__()一样
 
     def __getattr__(self, key):
         try:

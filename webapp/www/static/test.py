@@ -24,7 +24,7 @@ import asyncio
 async def test():   
     kw = {'host': 'localhost', 'port': 3306,'user': 'root','password': 'password','db': 'webapp','charset': 'utf8','autocommit': 'True','maxsize': 10,'minsize': 1} 
     await orm.create_pool(loop, **kw)
-    user = User(name='Test', email='test@example.com', passwd='1234567890', image='about:blank')
+    user = User(name='Test2', email='test2@example.com', passwd='1234567890', image='about:blank')
     await user.save()
     #user = await User.find('123')
     await orm.destroy_pool() #关闭连接池

@@ -11,7 +11,7 @@ from urllib import parse
 
 from aiohttp import web
 
-#from apis import APIError
+from apis import APIError
 
 
 def get(path):
@@ -47,7 +47,7 @@ def get_required_kw_args(fn):
     #inspect.Signature对象的parameters属性：一个mappingproxy（映射）类型的对象，值为一个有序字典（Orderdict）。字典的key为参数名，
     #  value是一个inspect.Parameter类型的对象
    
-    for name, param in params.items():
+    for name, param in params.items(): #例如函数f(a, b=0))。name是函数的参数名a，param为a;以及name是函数的参数名b，param为b=0
     #inspect.Parameter对象的kind属性：一个_ParameterKind枚举类型的对象，值为这个参数的类型（可变参数，关键词参数，etc）
     #inspect.Parameter对象的default属性：如果这个参数有默认值，即返回这个默认值，如果没有，返回一个inspect._empty类
         if param.kind == inspect.Parameter.KEYWORD_ONLY and param.default == inspect.Parameter.empty:
@@ -149,10 +149,14 @@ class RequestHandler(object):
             r = await self._func(**kw)
             return r
         except APIError as e:
+        #except Exception as e:
             return dict(error=e.error, data=e.data, message=e.message)
 
+
 def add_static(app):
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
+    #add_static(self,prefix,path,*,name=None,expect_handler=None，...)aiohttp添加静态资源路径。
+    #必要2个参数：prefix:静态文件的url前辍，以/开始，就比如这里的/static/。path：静态文件目录路径，可以是相对路径，也可以绝对路径。
     app.router.add_static('/static/', path)
     logging.info('add static %s => %s' % ('/static/', path))
 
@@ -165,7 +169,9 @@ def add_route(app, fn):
     if not asyncio.iscoroutinefunction(fn) and not inspect.isgeneratorfunction(fn):
         fn = asyncio.coroutine(fn)
     logging.info('add route %s %s => %s(%s)' % (method, path, fn.__name__, ', '.join(inspect.signature(fn).parameters.keys()))) #inspect.signature(fn).parameters.keys()fn函数的参数名
-    app.router.add_route(method, path, RequestHandler(app, fn))    
+    logging.info('key %s:' % inspect.signature(fn).parameters.keys())#join返回新的字符串
+    logging.info('join key: %s' % ', '.join(inspect.signature(fn).parameters.keys()))
+    app.router.add_route(method, path, RequestHandler(app, fn))   #RequestHandler(app, fn)为实例，但这里 RequestHandler是一个类，由于定义了__call__()方法，因此可以将其实例视为函数
     
 def add_routes(app, module_name):
     n = module_name.rfind('.') #rfind（）最后出现的位置
@@ -181,7 +187,7 @@ def add_routes(app, module_name):
         mod = getattr(__import__(module_name[:n], globals(), locals(), [name]), name)
     for attr in dir(mod): #这里的dir(mod)返回模块handlers的属性、方法列表。
         #dir(object)返回模块的属性、方法列表。dir()函数不带参数时，返回当前范围内的变量、方法和定义的类型列表;带参数时，返回参数的属性、方法列表。
-        if attr.startswith('_'): #startswith(str, beg,end)用于检查字符串是否以指定子字符串开关，如果是则返回True，否则返回False
+        if attr.startswith('_'): #startswith(str, beg,end)用于检查字符串是否以指定子字符串开始，如果是则返回True，否则返回False
             continue
         logging.info('attr: %s' % attr)
         fn = getattr(mod, attr) #getattr(object, name, default)返回一个对象属性值。object:对象。 name：字符串，对象属性。

@@ -27,14 +27,24 @@ def init_jinja2(app, **kw):
         auto_reload = kw.get('auto_reload', True)
     )
     path = kw.get('path', None)
+    logging.info('path: %s' % path)
+    logging.info('文件名: %s' % __file__)
+    logging.info('绝对路径: %s' % os.path.abspath(__file__))
+    logging.info('目录路径: %s' % os.path.dirname(os.path.abspath(__file__)))
+    logging.info('目录路径中的目录路径: %s' % os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     if path is None:
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+        #path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+        #os.path.join合成一个路径。os.path.dirname返回目录路径。os.path.abspath返回绝对路径
     logging.info('set jinja2 template path: %s' % path)
     env = Environment(loader=FileSystemLoader(path), **options)
+    logging.info('env: %s' % env)
     filters = kw.get('filters', None)
+    logging.info('filters: %s' % filters)
     if filters is not None:
         for name, f in filters.items():
             env.filters[name] = f
+            logging.info('env.filters[name]: %s' % env.filters[name])
     app['__templating__'] = env    
     
 
@@ -127,7 +137,7 @@ async def init(loop):
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers') # 自动把handler模块的所有符合条件的函数注册了
     # add_routes(app, 'index')
-    # add_static(app)
+    add_static(app)
     # add_route(app, index)
     
     srv = await loop.create_server(app.make_handler(), '127.0.0.1', 9000)
