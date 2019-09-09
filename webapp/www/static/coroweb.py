@@ -86,6 +86,8 @@ def has_request_arg(fn):
             raise ValueError('request parameter must be the last named parameter in function: %s%s' % (fn.__name__, str(sig)))
     return found
     
+#RequestHandler目的就是从URL函数中分析其需要接收的参数，从request中获取必要的参数，
+#调用URL函数，然后把结果转换为web.Response对象
 class RequestHandler(object):
 
     def __init__(self, app, fn):

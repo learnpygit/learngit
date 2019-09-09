@@ -14,7 +14,7 @@ from jinja2 import Environment, FileSystemLoader
 import orm
 from coroweb import add_routes, add_static, get, add_route
 
-import handlers
+from handlers import COOKIE_NAME, cookie2user
 
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
@@ -71,7 +71,7 @@ async def data_factory(app, handler):
 
 async def response_factory(app, handler):
     async def response(request):
-        logging.info('Response handler...')
+        logging.info('Response handler...: %s' % handler)
         r = await handler(request)
         if isinstance(r, web.StreamResponse):
             return r
@@ -92,8 +92,10 @@ async def response_factory(app, handler):
                 resp.content_type = 'application/json;charset=utf-8'
                 return resp
             else:
+                r['__user__'] = request.__user__
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
+                logging.info('resp: %s ' % resp)
                 return resp
         if isinstance(r, int) and r >= 100 and r < 600:
             return web.Response(r)
@@ -107,6 +109,19 @@ async def response_factory(app, handler):
         return resp
     return response
 
+async def auth_factory(app, handler):
+    async def auth(request):
+        logging.info('check user: %s %s' % (request.method, request.path))
+        request.__user__ = None
+        cookie_str = request.cookies.get(COOKIE_NAME)
+        if cookie_str:
+            user = await cookie2user(cookie_str)
+            if user:
+                logging.info('set current user: %s' % user.email)
+                request.__user__ = user
+        logging.info('Response auth handler...: %s' % handler)        
+        return (await handler(request))
+    return auth
 
 def datetime_filter(t):
     delta = int(time.time() - t)
@@ -132,7 +147,7 @@ def datetime_filter(t):
 async def init(loop):
     await orm.create_pool(loop=loop,host='127.0.0.1', port=3306, user='www',password='www',db='webapp')
     app = web.Application(loop=loop, middlewares=[
-        logger_factory, response_factory
+        logger_factory, response_factory, auth_factory
     ])
     init_jinja2(app, filters=dict(datetime=datetime_filter))
     add_routes(app, 'handlers') # 自动把handler模块的所有符合条件的函数注册了
